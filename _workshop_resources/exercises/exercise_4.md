@@ -1,51 +1,47 @@
-### Exercise 4: Linting
+### Exercise 4: Unit Tests
+`models/staging/jaffle_world/stg_jaffle_world__customers.sql` has a column 
+`is_valid_email` which uses regex to identify whether a customer’s email is 
+valid or not. The data type returned is a `boolean`.
 
-1. Create a new file called `.sqlfluff` at the root of the project 
-   (alongside dbt_project.yml).
+Starter YML is located at the bottom of this file. Use this to add a unit
+test to `models/staging/jaffle_world/docs/_stg_jaffle_world__customers.yml`:
 
-2. Copy and paste this SQLFluff configuration into the file, then save:
-   ```
-   [sqlfluff]
-   dialect = snowflake
-   templater = dbt
-   runaway_limit = 10
-   max_line_length = 80
-   indent_unit = space
-   exclude_rules = LT01, RF04, ST06
+1. Copy/Paste the code to the last line of the file.
+2. Finish filling out the `input` configuration (hint: take a look at 
+   models/staging/jaffle_world/stg_jaffle_world__customers.sql to see what
+   source that model is using in the SQL)
+3. Using the description, fill out the `given` and `expect` row and column values.
+4. Run `dbt build -s stg_jaffle_world__customers`. What are the results of the unit test?
 
-   [sqlfluff:indentation]
-   tab_space_size = 4
-
-   [sqlfluff:layout:type:comma]
-   spacing_before = touch
-   line_position = trailing
-   ```
-
-3. Set SQLFluff as your default linter:
-   a. Open any model, then click on the Code Quality tab.
-   b. Click the </> Config button.
-   c. Select SQLFluff from the popup and hit save.
-   d. Restart your IDE by refreshing your browser or clicking the 
-      ellipses menu in the bottom right corner choosing "Restart Studio".
-      This will allow your session to pick up your new configuration
-      for linting.
-
-4. Open the `models/staging/jaffle_world/stg_jaffle_world__customers.sql` 
-   file and click the "Lint" button. What are the results?
-
-5. Go back to your .sqlfluff file and change `line_position` to `leading`. 
-   Save and try linting `stg_jaffle_world__customers.sql` again. 
-   What are the results?
-
-7. Click the drop-down arrow next to the "Lint" button, and click "Fix".
-
-8. We've found this configuration in the SQLfluff docs which allows us to 
-   require keywords to be capitalized. Add this to your .sqlfluff configuration
-   and save:
-   ```
-   [sqlfluff:rules:capitalisation.keywords]
-   capitalisation_policy = upper
-   ```
-   (Reference: https://docs.sqlfluff.com/en/stable/reference/rules.html#capitalisation-bundle)
-
-9. Test linting and fixing again on the `stg_jaffle_world__customers` model.
+```yml
+unit_tests:
+  - name: test_is_valid_email_address
+    model: stg_jaffle_world__customers
+    description: >
+      Check that is_valid_email logic captures of our known edge cases:
+      - emails that have a .com without domain, like nodomain@.com
+      - emails that have a truncated domain address, like truncated@domain.c
+      - emails that have a missing dot in the domain, like missingdot@domaincom
+      - emails with no @, like noat.com
+      Additionally, we should check we're not marking emails which are valid 
+      that contain special characters, such as:
+      - c+berger@jaffle-shop.com
+      - d.horner@jaffle.com
+    given:
+      - input: source('', '')
+        rows:
+          - {email: }
+          - {email: }
+          - {email: }
+          - {email: }
+          - {email: }
+          - {email: }
+    expect:
+      rows:
+        - {email: , is_valid_email: }
+        - {email: , is_valid_email: }
+        - {email: , is_valid_email: }
+        - {email: , is_valid_email: }
+        - {email: , is_valid_email: }
+        - {email: , is_valid_email: }
+```

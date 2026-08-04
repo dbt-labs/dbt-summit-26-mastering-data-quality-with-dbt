@@ -1,32 +1,51 @@
-### Exercise 5 (Bonus): Model Contracts
+### Exercise 5 (Bonus): Linting
 
-1. Open `models/marts/docs/_dim_customers.yml` and examine the data contract
-   Note that contract Enforced is set to 'true' and each column is associated with a data type
+1. Create a new file called `.sqlfluff` at the root of the project 
+   (alongside dbt_project.yml).
 
-2. excute the command 'dbt build --select dim_customers' to confirm the model currently builds successfully
+2. Copy and paste this SQLFluff configuration into the file, then save:
+   ```
+   [sqlfluff]
+   dialect = snowflake
+   templater = dbt
+   runaway_limit = 10
+   max_line_length = 80
+   indent_unit = space
+   exclude_rules = LT01, RF04, ST06
 
-3. In `models/marts/docs/_dim_customers.yml`, try commenting out one of the column definitions like in the code shown below and save:
+   [sqlfluff:indentation]
+   tab_space_size = 4
 
-    ```yml
-      #  - name: is_valid_email
-      #    description: Boolean value showing whether an email is valid or not 
-      #    data_type: boolean
-    ```
-4. excute the command 'dbt build --select dim_customers' and note the failure calling out the missing column definition
+   [sqlfluff:layout:type:comma]
+   spacing_before = touch
+   line_position = trailing
+   ```
 
-5. Uncomment the column definition in `models/marts/docs/_dim_customers.yml`
+3. Set SQLFluff as your default linter:
+   a. Open any model, then click on the Code Quality tab.
+   b. Click the </> Config button.
+   c. Select SQLFluff from the popup and hit save.
+   d. Restart your IDE by refreshing your browser or clicking the 
+      ellipses menu in the bottom right corner choosing "Restart Studio".
+      This will allow your session to pick up your new configuration
+      for linting.
 
-6. Replace the code on lines 15-18 in 'models/staging/jaffle_world/stg_jaffle_world__customers.sql' with the below code:
-Note: You will also need to comment out the unit test created earlier in `models/staging/jaffle_world/docs/_stg_jaffle_world__customers.yml`
+4. Open the `models/staging/jaffle_world/stg_jaffle_world__customers.sql` 
+   file and click the "Lint" button. What are the results?
 
-    ```sql
-    ,iff(regexp_like(
-        email, 
-        '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
-    ) = true,'Valid', 'Invalid') as is_valid_email
-    ```
+5. Go back to your .sqlfluff file and change `line_position` to `leading`. 
+   Save and try linting `stg_jaffle_world__customers.sql` again. 
+   What are the results?
 
-7. Execute 'dbt build --select +dim_customers' to run dim_customers and all upstream models (including the one we just changed)
-   Note the error showing that we are attempting to use a text field instead of the defined boolean field
+7. Click the drop-down arrow next to the "Lint" button, and click "Fix".
 
-8. Revert your code change in 'models/staging/jaffle_world/stg_jaffle_world__customers.sql' so that your code can build succesfully again
+8. We've found this configuration in the SQLfluff docs which allows us to 
+   require keywords to be capitalized. Add this to your .sqlfluff configuration
+   and save:
+   ```
+   [sqlfluff:rules:capitalisation.keywords]
+   capitalisation_policy = upper
+   ```
+   (Reference: https://docs.sqlfluff.com/en/stable/reference/rules.html#capitalisation-bundle)
+
+9. Test linting and fixing again on the `stg_jaffle_world__customers` model.
