@@ -1,47 +1,31 @@
-### Exercise 3: Unit Tests
-`models/staging/jaffle_world/stg_jaffle_world__customers.sql` has a column 
-`is_valid_email` which uses regex to identify whether a customer’s email is 
-valid or not. The data type returned is a `boolean`.
+### Exercise 3: Model Contracts
 
-Starter YML is located at the bottom of this file. Use this to add a unit
-test to `models/staging/jaffle_world/docs/_stg_jaffle_world__customers.yml`:
+1. Open `models/marts/docs/_dim_customers.yml` and examine the data contract
+   Note that contract Enforced is set to 'true' and each column is associated with a data type
 
-1. Copy/Paste the code to the last line of the file.
-2. Finish filling out the `input` configuration (hint: take a look at 
-   models/staging/jaffle_world/stg_jaffle_world__customers.sql to see what
-   source that model is using in the SQL)
-3. Using the description, fill out the `given` and `expect` row and column values.
-4. Run `dbt build -s stg_jaffle_world__customers`. What are the results of the unit test?
+2. excute the command 'dbt build --select dim_customers' to confirm the model currently builds successfully
 
-```yml
-unit_tests:
-  - name: test_is_valid_email_address
-    model: stg_jaffle_world__customers
-    description: >
-      Check that is_valid_email logic captures of our known edge cases:
-      - emails that have a .com without domain, like nodomain@.com
-      - emails that have a truncated domain address, like truncated@domain.c
-      - emails that have a missing dot in the domain, like missingdot@domaincom
-      - emails with no @, like noat.com
-      Additionally, we should check we're not marking emails which are valid 
-      that contain special characters, such as:
-      - c+berger@jaffle-shop.com
-      - d.horner@jaffle.com
-    given:
-      - input: source('', '')
-        rows:
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-    expect:
-      rows:
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-```
+3. In `models/marts/docs/_dim_customers.yml`, try commenting out one of the column definitions like in the code shown below and save:
+
+    ```yml
+      #  - name: is_valid_email
+      #    description: Boolean value showing whether an email is valid or not 
+      #    data_type: boolean
+    ```
+4. excute the command 'dbt build --select dim_customers' and note the failure calling out the missing column definition
+
+5. Uncomment the column definition in `models/marts/docs/_dim_customers.yml`
+
+6. Replace the code on lines 15-18 in `models/staging/jaffle_world/stg_jaffle_world__customers.sql` with the below code:
+
+    ```sql
+    ,iff(regexp_like(
+        email, 
+        '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
+    ) = true,'Valid', 'Invalid') as is_valid_email
+    ```
+
+7. Execute 'dbt build --select +dim_customers' to run dim_customers and all upstream models (including the one we just changed)
+   Note the error showing that we are attempting to use a text field instead of the defined boolean field
+
+8. Revert your code change in 'models/staging/jaffle_world/stg_jaffle_world__customers.sql' so that your code can build succesfully again

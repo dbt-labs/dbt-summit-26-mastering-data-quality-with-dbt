@@ -1,50 +1,39 @@
-### [ANSWER KEY] Exercise 4: Linting
+### [ANSWER KEY] Exercise 4: Unit Tests
 
-1. Your file tree should look like:
-   ```
-   └── Coalesce-2025-Building-a-Data-Quality-Framework-with-dbt
-    ├── analyses/
-    ├── macros/
-    ├── models/
-    ├── # other folders/files...
-    ├── .sqlfluff <---------------------- # file should be created at this level
-    └── dbt_project.yml
-   ```
+The `unit_test` key should start on lines 36 or 37 of 
+`models/staging/jaffle_world/docs/_stg_jaffle_world__customers.yml`.
 
-2. After adding your config file and changing your default linter, you should
-   have restarted dbt Studio for your configs to take effect.
-
-3. When first linting the `stg_jaffle_shop__custoemrs` model, it should return
-   no linting errors.
-
-4. After changing the comma's `line_position` config to `leading`, the linting
-   of `stg_jaffle_shop__customers` should return errors stating that leading
-   commas were expected.
-
-5. Clicking "Fix" on `stg_jaffle_shop__customers` should change all trailing commas 
-   to leading commas in the SQL.
-
-6. Adding the `capitalisation_policy` for keyowrds should result in uncapitalized keyword
-   errors in `stg_jaffle_shop__customers`. Fixing these should change all lower-cased
-   keywords to uppercase.
-
-Here are the finished `.sqlfluff` contents:
+Here is the completed unit test configuration, which results in a successful 
+test status when running `dbt build -s stg_jaffle_world__customers`:
 ```
-[sqlfluff]
-dialect = snowflake
-templater = dbt
-runaway_limit = 10
-max_line_length = 80
-indent_unit = space
-exclude_rules = LT01, RF04, ST06
-
-[sqlfluff:indentation]
-tab_space_size = 4
-
-[sqlfluff:layout:type:comma]
-spacing_before = touch
-line_position = leading
-
-[sqlfluff:rules:capitalisation.keywords]
-capitalisation_policy = upper
+unit_tests:
+  - name: test_is_valid_email_address
+    model: stg_jaffle_world__customers
+    description: >
+      Check that is_valid_email logic captures of our known edge cases:
+      - emails that have a .com without domain like nodomain@.com
+      - emails that have a domain, but truncated like truncated@domain.c
+      - emails that have a missing dot in the domain, like missingdot@domaincom
+      - emails with no @, like noat.com
+      Additionally, we should check that we're not marking emails
+      with valid special characters as invalid, such as:
+      - c+berger@jaffle-shop.com
+      - d.horner@jaffle.com
+    given:
+      - input: source('jaffle_world', 'customers')
+        rows:
+          - {email: nodomain@.com}
+          - {email: truncated@domain.c}
+          - {email: noat.com}
+          - {email: email@missingdotcom}
+          - {email: c+berger@jaffle-shop.com}
+          - {email: d.horner@jaffle.com}
+    expect:
+      rows:
+        - {email: nodomain@.com, is_valid_email: false}
+        - {email: truncated@domain.c, is_valid_email: false}
+        - {email: noat.com, is_valid_email: false}
+        - {email: email@missingdotcom, is_valid_email: false}
+        - {email: c+berger@jaffle-shop.com, is_valid_email: true}
+        - {email: d.horner@jaffle.com, is_valid_email: true}
 ```
