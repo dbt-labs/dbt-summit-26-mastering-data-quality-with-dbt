@@ -8,4 +8,4 @@
    What is the result?
 
 3. Take a look at `models/reports/customer_lifetime_values.sql` to try and identify the issue
-   *TIP*: Something in the agg_customer_orders CTE is causting duplicate customer_id records
+   *TIP*: Something in the agg_customer_orders CTE is causing duplicate customer_id records
