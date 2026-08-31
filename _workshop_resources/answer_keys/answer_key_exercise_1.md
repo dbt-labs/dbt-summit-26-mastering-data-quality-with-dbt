@@ -11,7 +11,7 @@
    ```
 
 2. The results of the run should have lines for the `unique` and `not_null` 
-   tests, which show a successful (passing) run.
+   tests. The not null test should have passed and been successful. The unique test should have failed (errored).
 
 3. Lines 12-23 of `models/reports/customer_lifetime_values.sql` should look like:
    ```
@@ -28,4 +28,4 @@
     from orders
     group by 1, 2
    ```
-   The unique test should fail when running `dbt build -s fct_orders`.
+   The inclusion of `order_id` in this CTE is making `customer_id` not unique.
