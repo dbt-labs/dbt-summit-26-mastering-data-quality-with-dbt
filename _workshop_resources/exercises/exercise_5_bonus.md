@@ -1,9 +1,9 @@
 ### Exercise 5 (Bonus): Model Contracts
 
 1. Open `models/marts/docs/_dim_customers.yml` and examine the data contract
-   Note that contract Enforced is set to 'true' and each column is associated with a data type
+   Note that contract enforced is set to 'true' and each column is associated with a data type
 
-2. excute the command 'dbt build --select dim_customers' to confirm the model currently builds successfully
+2. Execute the command 'dbt build --select dim_customers' to confirm the model currently builds successfully
 
 3. In `models/marts/docs/_dim_customers.yml`, try commenting out one of the column definitions like in the code shown below and save:
 
@@ -12,7 +12,7 @@
       #    description: Boolean value showing whether an email is valid or not 
       #    data_type: boolean
     ```
-4. excute the command 'dbt build --select dim_customers' and note the failure calling out the missing column definition
+4. Execute the command 'dbt build --select dim_customers' and note the failure calling out the missing column definition
 
 5. Uncomment the column definition in `models/marts/docs/_dim_customers.yml`
 
