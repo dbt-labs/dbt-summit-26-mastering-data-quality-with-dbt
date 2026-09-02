@@ -1,47 +1,17 @@
-### Exercise 3: Unit Tests
-`models/staging/jaffle_world/stg_jaffle_world__customers.sql` has a column 
-`is_valid_email` which uses regex to identify whether a customer’s email is 
-valid or not. The data type returned is a `boolean`.
+### Exercise 3: Model Contracts
 
-Starter YML is located at the bottom of this file. Use this to add a unit
-test to `models/staging/jaffle_world/docs/_stg_jaffle_world__customers.yml`:
+1. Open file `models/marts/docs/_fct_orders.yml` and enforce a contract. 
+Note that the data types have already been added for you.
 
-1. Copy/Paste the code to the last line of the file.
-2. Finish filling out the `input` configuration (hint: take a look at 
-   models/staging/jaffle_world/stg_jaffle_world__customers.sql to see what
-   source that model is using in the SQL)
-3. Using the description, fill out the `given` and `expect` row and column values.
-4. Run `dbt build -s stg_jaffle_world__customers`. What are the results of the unit test?
+2. Run `dbt build -s fct_orders`. 
+what's the result?
 
-```yml
-unit_tests:
-  - name: test_is_valid_email_address
-    model: stg_jaffle_world__customers
-    description: >
-      Check that is_valid_email logic captures of our known edge cases:
-      - emails that have a .com without domain, like nodomain@.com
-      - emails that have a truncated domain address, like truncated@domain.c
-      - emails that have a missing dot in the domain, like missingdot@domaincom
-      - emails with no @, like noat.com
-      Additionally, we should check we're not marking emails which are valid 
-      that contain special characters, such as:
-      - c+berger@jaffle-shop.com
-      - d.horner@jaffle.com
-    given:
-      - input: source('', '')
-        rows:
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-    expect:
-      rows:
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-        - {email: , is_valid_email: }
-```
+3. In `models/marts/docs/_fct_orders.yml` for column `order_total` change `data_type: decimal(16,2)` to `data_type: decimal`. 
+Re-run `dbt build -s fct_orders`. 
+What happens? 
+
+4. In `models/marts/docs/_fct_orders.yml` for column `order_total` change `data_type: decimal` to `data_type: varchar`. 
+Re-run `dbt build -s fct_orders`. 
+What happens? 
+
+5. In the yml change the data_type back to `decimal(16,2)` and re-run `dbt build -s fct_orders`.
