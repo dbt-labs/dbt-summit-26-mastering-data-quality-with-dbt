@@ -28,7 +28,7 @@ unit_tests:
       - c+berger@jaffle-shop.com
       - d.horner@jaffle.com
     given:
-      - input: source('', '')
+      - input: source('jaffle_word', 'customers')
         rows:
           - {email: }
           - {email: }
