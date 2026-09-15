@@ -1,0 +1,7 @@
+{%- test check_type(model, column) %}
+
+select {{column}}
+from {{model}}
+where type_of({{column}}) != 'Decimal'
+
+{% -end %}
