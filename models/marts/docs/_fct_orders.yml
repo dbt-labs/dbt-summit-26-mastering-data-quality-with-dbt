@@ -1,5 +1,8 @@
 models:
   - name: fct_orders
+    config:
+      contract:
+        enforced: true
     description: >
       This model filters and selects completed orders from the internal orders
       table, providing a comprehensive view of finalized transactions. It is useful
@@ -38,6 +41,8 @@ models:
       - name: order_total
         description: The total amount for the order including taxes.
         data_type: decimal(16,2)
+        # data_tests:
+        #   - assert_decimal
 
       - name: employee_id
         description: The identifier for the employee who processed the order.
