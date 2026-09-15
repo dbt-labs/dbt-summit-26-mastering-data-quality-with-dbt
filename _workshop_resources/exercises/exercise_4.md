@@ -19,7 +19,7 @@ unit_tests:
     model: stg_jaffle_world__customers
     description: >
       Check that is_valid_email logic captures of our known edge cases:
-      - emails that have a .com without domain, like nodomain@.com
+      - emails that have a .com without domain, like nodomain@.comnodomain@.com
       - emails that have a truncated domain address, like truncated@domain.c
       - emails that have a missing dot in the domain, like missingdot@domaincom
       - emails with no @, like noat.com
@@ -28,14 +28,14 @@ unit_tests:
       - c+berger@jaffle-shop.com
       - d.horner@jaffle.com
     given:
-      - input: source('', '')
+      - input: source('jaffle_world', 'customers') 
         rows:
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
-          - {email: }
+          - {email: 'nodomain@.com'}
+          - {email: 'nodomain@.comnodomain@.com'}
+          - {email: 'truncated@domain.c' }
+          - {email: 'missingdot@domaincom'}
+          - {email: 'noat.com'}
+          - {email: ''}
     expect:
       rows:
         - {email: , is_valid_email: }
@@ -45,3 +45,39 @@ unit_tests:
         - {email: , is_valid_email: }
         - {email: , is_valid_email: }
 ```
+
+models:
+  - name: stg_jaffle_world__customers
+    description: >
+      This model serves as a staging layer for customer data 
+      from the 'jaffle_world' source. It standardizes and 
+      renames fields for consistency and ease of use in 
+      downstream models.
+    columns:
+      - name: customer_id
+        description: A unique identifier for each customer.
+        data_tests:
+          - unique 
+          - not_null
+          
+      - name: address_id
+        description: >
+          The identifier for the address associated with the customer.
+
+      - name: first_name
+        description: The first name of the customer.
+
+      - name: last_name
+        description: The last name of the customer.
+
+      - name: email
+        description: The email address of the customer.
+
+      - name: phone
+        description: The phone number of the customer.
+
+      - name: created_at
+        description: The timestamp when the customer record was created.
+
+      - name: updated_at
+        description: The timestamp when the customer record was last updated.
