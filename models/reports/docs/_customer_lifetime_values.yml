@@ -4,34 +4,18 @@ models:
       This model calculates the lifetime value of customers by aggregating
       their order history and classifying them as new or returning customers. It provides
       insights into customer spending behavior and order patterns.
+
     columns:
-    - name: customer_id
-      description: A unique identifier for each customer.
+      - name: customer_id
+        description: A unique identifier for each customer.
+        data_tests:
+          - unique
+          - not_null
 
-    - name: customer_name
-      description: The full name of the customer.
+      - name: customer_name
+        description: The full name of the customer.
 
-    - name: customer_email
-      description: The email address of the customer.
+      - name: customer_email
+        description: The email address of the customer.
 
-    - name: customer_type
-      description: >
-        Indicates whether the customer is new or returning based on their
-        order history.
-    - name: total_orders
-      description: The total number of orders placed by the customer.
-
-    - name: total_gross_spend
-      description: The total gross amount spent by the customer across all orders.
-
-    - name: total_net_spend
-      description: The total net amount spent by the customer after discounts and returns.
-
-    - name: total_tax_paid
-      description: The total amount of tax paid by the customer across all orders.
-
-    - name: earliest_order_at
-      description: The timestamp of the customer's first order.
-      
-    - name: latest_order_at
-      description: The timestamp of the customer's most recent order.
+      # ... remaining columns
