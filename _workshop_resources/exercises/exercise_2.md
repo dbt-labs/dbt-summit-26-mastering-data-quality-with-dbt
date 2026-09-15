@@ -3,6 +3,9 @@
 1. Create a generic test to assert that a column is type DECIMAL.
    *TIP*: Use Snowflake’s typeof() function
 
+   the default arguments are model and column_name
+   furthermore generic tests should exist in generic/
+
 2. Apply your test to the `fct_orders` model in 
    `models/marts/docs/_fct_orders.yml` on the `order_total` column.
 
