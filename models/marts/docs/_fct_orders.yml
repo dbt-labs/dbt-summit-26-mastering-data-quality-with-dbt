@@ -38,6 +38,8 @@ models:
       - name: order_total
         description: The total amount for the order including taxes.
         data_type: decimal(16,2)
+        tests:
+          - column_type_is_decimal
 
       - name: employee_id
         description: The identifier for the employee who processed the order.
