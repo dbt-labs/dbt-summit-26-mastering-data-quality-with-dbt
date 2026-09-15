@@ -11,7 +11,6 @@ customers as (
 agg_customer_orders as (
     select
         customer_id,
-        order_id,
         count(order_id) as total_orders,
         count(order_id) > 1 as is_repeat_customer,
         min(ordered_at) as earliest_order_at,
@@ -20,7 +19,7 @@ agg_customer_orders as (
         round(sum(order_total), 2) as total_net_spend,
         round(sum(tax), 2) as total_tax_paid
     from orders
-    group by 1,2
+    group by 1
 ),
 
 final as (

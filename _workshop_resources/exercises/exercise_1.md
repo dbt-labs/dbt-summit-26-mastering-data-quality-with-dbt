@@ -6,6 +6,8 @@
 
 2. Test the model by running `dbt build -s customer_lifetime_values`. 
    What is the result?
+   - uniquness fails
 
 3. Take a look at `models/reports/customer_lifetime_values.sql` to try and identify the issue
    *TIP*: Something in the agg_customer_orders CTE is causing duplicate customer_id records
+    agg_customer_orders aggregates on order_id which is expected to have a many to 1 relationship with customers
