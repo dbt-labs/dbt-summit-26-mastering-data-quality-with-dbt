@@ -4,10 +4,15 @@ models:
       This model filters and selects completed orders from the internal orders
       table, providing a comprehensive view of finalized transactions. It is useful
       for analyzing sales performance and customer purchasing behavior.
+    config: 
+      contract: 
+        enforced: true
     columns:
       - name: order_id
         description: A unique identifier for each order.
         data_type: int
+        constraints: 
+          - type: not_null
 
       - name: customer_id
         description: The identifier for the customer who placed the order.
