@@ -4,6 +4,9 @@ models:
       This model filters and selects completed orders from the internal orders
       table, providing a comprehensive view of finalized transactions. It is useful
       for analyzing sales performance and customer purchasing behavior.
+    config:
+      contract:
+          enforced: true
     columns:
       - name: order_id
         description: A unique identifier for each order.
@@ -39,7 +42,7 @@ models:
         description: The total amount for the order including taxes.
         data_type: decimal(16,2)
         data_tests:
-          - test_type_is_decimal
+          - type_is_decimal
 
       - name: employee_id
         description: The identifier for the employee who processed the order.
