@@ -1,0 +1,13 @@
+macros:
+  - name: test_test_type
+    description: Use this test to check the data type of a specific columns.
+    arguments:
+      - name: model 
+        type: string
+        description: Model Name
+      - name: column_name
+        type: string
+        description: Column name that should not be an empty string
+      - name: data_type
+        type: string
+        description: Data type that you'd like to test on
