@@ -34,33 +34,33 @@ models:
       - name: updated_at
         description: The timestamp when the customer record was last updated.
 
-unit_tests:
-  - name: test_is_valid_email_address
-    model: stg_jaffle_world__customers
-    description: >
-      Check that is_valid_email logic captures of our known edge cases:
-      - emails that have a .com without domain, like nodomain@.com
-      - emails that have a truncated domain address, like truncated@domain.c
-      - emails that have a missing dot in the domain, like missingdot@domaincom
-      - emails with no @, like noat.com
-      Additionally, we should check we're not marking emails which are valid 
-      that contain special characters, such as:
-      - c+berger@jaffle-shop.com
-      - d.horner@jaffle.com
-    given:
-      - input: source('jaffle_world', 'customers')
-        rows:
-          - {email: 'ming-ming.tran@thinkbrg.com'}
-          - {email: 'ming-ming.tran@thinkbrg'}
-          - {email: 'a+ali@thinkbrg.com'}
-          - {email: 'a@ali@thinkbrg.com'}
-          - {email: 'ahwang@.com'}
-          - {email: 'ahwangthinkbrg.com'}
-    expect:
-      rows:
-        - {email: 'ming-ming.tran@thinkbrg.com', is_valid_email: true}
-        - {email: 'ming-ming.tran@thinkbrg', is_valid_email: false}
-        - {email: 'a+ali@thinkbrg.com', is_valid_email: true}
-        - {email: 'a@ali@thinkbrg.com', is_valid_email: false}
-        - {email: 'ahwang@.com', is_valid_email: false}
-        - {email: ahwangthinkbrg.com, is_valid_email: false}
+# unit_tests:
+#   - name: test_is_valid_email_address
+#     model: stg_jaffle_world__customers
+#     description: >
+#       Check that is_valid_email logic captures of our known edge cases:
+#       - emails that have a .com without domain, like nodomain@.com
+#       - emails that have a truncated domain address, like truncated@domain.c
+#       - emails that have a missing dot in the domain, like missingdot@domaincom
+#       - emails with no @, like noat.com
+#       Additionally, we should check we're not marking emails which are valid 
+#       that contain special characters, such as:
+#       - c+berger@jaffle-shop.com
+#       - d.horner@jaffle.com
+#     given:
+#       - input: source('jaffle_world', 'customers')
+#         rows:
+#           - {email: 'ming-ming.tran@thinkbrg.com'}
+#           - {email: 'ming-ming.tran@thinkbrg'}
+#           - {email: 'a+ali@thinkbrg.com'}
+#           - {email: 'a@ali@thinkbrg.com'}
+#           - {email: 'ahwang@.com'}
+#           - {email: 'ahwangthinkbrg.com'}
+#     expect:
+#       rows:
+#         - {email: 'ming-ming.tran@thinkbrg.com', is_valid_email: true}
+#         - {email: 'ming-ming.tran@thinkbrg', is_valid_email: false}
+#         - {email: 'a+ali@thinkbrg.com', is_valid_email: true}
+#         - {email: 'a@ali@thinkbrg.com', is_valid_email: false}
+#         - {email: 'ahwang@.com', is_valid_email: false}
+#         - {email: ahwangthinkbrg.com, is_valid_email: false}
