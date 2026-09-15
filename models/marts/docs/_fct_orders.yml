@@ -1,5 +1,8 @@
 models:
   - name: fct_orders
+    config:
+      contract:
+        enforced: true
     description: >
       This model filters and selects completed orders from the internal orders
       table, providing a comprehensive view of finalized transactions. It is useful
