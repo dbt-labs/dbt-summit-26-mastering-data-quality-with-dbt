@@ -7,7 +7,10 @@ models:
     columns:
     - name: customer_id
       description: A unique identifier for each customer.
-
+      data_tests:
+        - unique
+        - not_null
+      
     - name: customer_name
       description: The full name of the customer.
 
